@@ -1,25 +1,45 @@
 package ru.netology;
 
 
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.codeborne.selenide.Selenide;
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.time.Duration;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.open;
 
 public class CardDeliveryTest {
-    @BeforeEach
-    void setup() {
-        open("http://localhost:9999");
+
+    private WebDriver driver;
+
+    @BeforeAll
+    public static void setUpAll() {
+        WebDriverManager.chromedriver().setup();
+        Selenide.open("http://localhost:9999");
     }
 
+    @BeforeEach
+    void setup() {
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("--no-sandbox");
+        options.addArguments("--headless");
+        driver = new ChromeDriver(options);
+        driver.get("http://localhost:9999");
+    }
+
+    @AfterEach
+    public void tearDown() {
+        driver.quit();
+        driver = null;
+    }
     @Test
     @DisplayName("Should successful plan meeting")
     void shouldSuccessfulPlanMeeting() {
